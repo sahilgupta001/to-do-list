@@ -20,7 +20,3 @@ export const uncheckedList = {
         timestamp: new Date()
     },
 }
-
-export const checkedList = {
-
-}
