@@ -1,102 +1,43 @@
-import { useState, useEffect } from 'react';
-import { uncheckedList } from './data';
 
-export default function List() {
-    const [pendingTasks, setPendingTasks] = useState();
-    const [completedTasks, setCompletedTasks] = useState({});
 
-    useEffect(() => {
-        setPendingTasks(uncheckedList);
-    }, [])
-   
-    const markAsChecked = (key, data) => {
-        setCompletedTasks({
-            ...completedTasks,
-            [key] : data
-        })
-        delete pendingTasks[key];
-    }
-
-    const markAsUnchecked = (key, data) => {
-        delete completedTasks[key];
-
-        setPendingTasks({
-            ...pendingTasks,
-            [key] : data
-        })
-    }
-
-    const unCheckedListHTML = () => {
-        if (!pendingTasks)
+export default function List(props) {
+    
+    const { list, fireListEvent, buttonText, title } = props;
+    
+    const generateHTML = () => {
+        if (!list)
             return <></>
-        var html = Object.keys(pendingTasks).map((uncheckedItem, index) => (
+        var html = Object.keys(list).map((item, index) => (
             <>
                 <div className = "col-1">
-                    <h6>{index + 1}</h6>
+                    <h6 className="font-weight-bold">{index + 1}</h6>
                 </div>
                 <div className='col-8'>
-                    <p className='float-left'>{pendingTasks[uncheckedItem].description}</p>
+                    <p className='float-left font-weight-bold'>{list[item].description}</p>
                 </div>
                 <div className = 'col-3'>
                     <button 
-                        onClick = {() => {markAsChecked(uncheckedItem, pendingTasks[uncheckedItem])}}
-                        className = "btn btn-sm btn-info">Check</button>
-                </div>
-            </>
-        ))
-        return html;
-    }
-
-    const checkedListHTML = () => {
-        if (!completedTasks)
-            return <></>
-        var html = Object.keys(completedTasks).map((checkedItem, index) => (
-            <>
-                <div className = "col-1">
-                    <h6>{index + 1}</h6>
-                </div>
-                <div className='col-8'>
-                    <p className='float-left'>{completedTasks[checkedItem].description}</p>
-                </div>
-                <div className = 'col-3'>
-                    <button 
-                        onClick = {() => {markAsUnchecked(checkedItem, completedTasks[checkedItem])}}
-                        className = "btn btn-sm btn-info">Un-Check
+                        onClick = {() => {fireListEvent(item, list[item])}}
+                        className = "btn btn-sm btn-info">{buttonText}
                     </button>
                 </div>
             </>
         ))
         return html;
     }
-    
+
     return (
-        <section className='container mt-5'>
-            <div className = "row">
-                <div className = "col-6">
-                    <div className = "card">
-                        <div className = "card-title mt-4">
-                            <h3 className = "font-weight-bold">Tasks to be done</h3>            
-                        </div>
-                        <div className = "card-body">
-                            <div className = "row">
-                                {unCheckedListHTML()}
-                            </div>
-                        </div>
-                    </div>
-                        </div>
-                <div className = "col-6">
-                    <div className = "card">
-                        <div className = "card-title mt-4">
-                            <h3 className = "font-weight-bold">Completed Tasks</h3>
-                        </div>
-                        <div className = "card-body">
-                            <div className = "row">
-                                {checkedListHTML()}  
-                            </div>      
-                        </div>           
+        <section>
+            <div className = "card">
+                <div className = "card-title mt-4">
+                    <h3 className = "font-weight-bold">{title}</h3>
+                </div>
+                <div className = "card-body">
+                    <div className = "row">    
+                        {generateHTML()}
                     </div>
                 </div>
             </div>
         </section>
-    );
+    )
 }
