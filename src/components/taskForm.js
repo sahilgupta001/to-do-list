@@ -1,15 +1,26 @@
-import { useState, useEffect } from "react"
+import { useState } from "react"
 
-
-export default function TaskForm() {
+export default function TaskForm(props) {
+    const { addToList } = props;
 
     const [description, setDescription] = useState("");
+    const [key, setKey] = useState("");
 
-    console.log(description)
-    
+
     return(
         <section className = "col-12">
             <div className="row">
+                <div class="form-group col-4">
+                    <input 
+                        type="text" 
+                        className="form-control" 
+                        placeholder="Enter new key" 
+                        value = {key}
+                        onChange={(e) => {
+                            setKey(e.target.value)
+                        }}  
+                    />
+                </div>
                 <div class="form-group col-4">
                     <input 
                         type="text" 
@@ -21,8 +32,18 @@ export default function TaskForm() {
                         }}  
                     />
                 </div>
-                <div className="col-8">
-                    <button className = "btn btn-primary float-left">Add to List</button>
+                <div className="col-4">
+                    <button 
+                        className = "btn btn-primary float-left"
+                        disabled = {description.length === 0 ||  key.length === 0}
+                        onClick = {() => {
+                            addToList(key, description)
+                            setKey("");
+                            setDescription("");
+                        }}
+                    >
+                        Add to List
+                    </button>
                 </div>
             </div>
         </section>

@@ -1,15 +1,25 @@
 import { useState, useEffect } from 'react';
-import { uncheckedList } from './data';
+import { uncheckedList, uncheckedArray } from './data';
 import List from './list'
 import TaskForm from './taskForm';
 
 export default function Dashboard() {
     const [pendingTasks, setPendingTasks] = useState();
-    const [completedTasks, setCompletedTasks] = useState({});
-
+    const [completedTasks, setCompletedTasks] = useState([]);
+    
     useEffect(() => {
         setPendingTasks(uncheckedList);
     }, [])
+
+    const addToList = (key, description) => {
+        setPendingTasks({
+            ...pendingTasks,
+            [key] : {
+                description: description,
+                timestamp : new Date() 
+            }
+        })
+    }
    
     const markAsChecked = (key, data) => {
         setCompletedTasks({
@@ -31,7 +41,10 @@ export default function Dashboard() {
     return (
         <section className='container mt-5'>
             <div className = "row mb-3">
-                <TaskForm />
+                <TaskForm 
+                    pendingTasks = {pendingTasks}
+                    addToList = {addToList}
+                />
             </div>
             <div className = "row">
                 <div className = "col-6">
@@ -50,6 +63,9 @@ export default function Dashboard() {
                         title = "Completed Tasks"
                     /> 
                 </div>
+            </div>
+            <div className='row'>
+                List item description
             </div>
         </section>
     );

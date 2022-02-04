@@ -12,8 +12,14 @@ export default function List(props) {
                 <div className = "col-1">
                     <h6 className="font-weight-bold">{index + 1}</h6>
                 </div>
-                <div className='col-8'>
+                <div className='col-6'>
                     <p className='float-left font-weight-bold'>{list[item].description}</p>
+                </div>
+                <div className = 'col-2'>
+                    <button 
+                        onClick = {() => {fireListEvent(item, list[item])}}
+                        className = "btn btn-sm btn-dark">View
+                    </button>
                 </div>
                 <div className = 'col-3'>
                     <button 
