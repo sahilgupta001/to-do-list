@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { uncheckedList, uncheckedArray } from './data';
+import { uncheckedList } from './data';
 import List from './list'
 import TaskForm from './taskForm';
 
