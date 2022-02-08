@@ -1,12 +1,14 @@
 import { useState, useEffect } from 'react';
 import { uncheckedList } from './data';
+import Description from './description';
 import List from './list'
 import TaskForm from './taskForm';
 
 export default function Dashboard() {
     const [pendingTasks, setPendingTasks] = useState();
     const [completedTasks, setCompletedTasks] = useState([]);
-    
+    const [currentItemInView, setCurrentItemInView] = useState(undefined);
+
     useEffect(() => {
         setPendingTasks(uncheckedList);
     }, [])
@@ -37,6 +39,13 @@ export default function Dashboard() {
             [key] : data
         })
     }
+
+    const viewTask = (key, data) => {
+        setCurrentItemInView({
+            key: key,
+            data : data
+        })
+    }
     
     return (
         <section className='container mt-5'>
@@ -53,6 +62,8 @@ export default function Dashboard() {
                         fireListEvent = {markAsChecked}
                         buttonText = "Check"
                         title = "Tasks to be done !!"
+                        viewTask = {viewTask}
+                        currentItemInView = {currentItemInView}
                     />
                 </div>
                 <div className = "col-6">
@@ -61,12 +72,18 @@ export default function Dashboard() {
                         fireListEvent = {markAsUnchecked}     
                         buttonText = "Un-Check"
                         title = "Completed Tasks"
+                        viewTask = {viewTask}
+                        currentItemInView = {currentItemInView}
                     /> 
                 </div>
             </div>
-            <div className='row'>
-                List item description
-            </div>
+            {currentItemInView &&
+                <div className='row'>
+                    <Description 
+                        task = {currentItemInView}
+                    /> 
+                </div>
+            }
         </section>
     );
 }

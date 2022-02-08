@@ -1,8 +1,7 @@
 
 
 export default function List(props) {
-    
-    const { list, fireListEvent, buttonText, title } = props;
+    const { list, fireListEvent, buttonText, title, viewTask, currentItemInView } = props;
     
     const generateHTML = () => {
         if (!list)
@@ -17,14 +16,19 @@ export default function List(props) {
                 </div>
                 <div className = 'col-2'>
                     <button 
-                        onClick = {() => {fireListEvent(item, list[item])}}
-                        className = "btn btn-sm btn-dark">View
+                        onClick = {() => {viewTask(item, list[item])}}
+                        className = "btn btn-sm btn-dark"
+                        disabled = {currentItemInView ? currentItemInView.key === item : false}
+                    >
+                        View
                     </button>
                 </div>
                 <div className = 'col-3'>
                     <button 
                         onClick = {() => {fireListEvent(item, list[item])}}
-                        className = "btn btn-sm btn-info">{buttonText}
+                        className = "btn btn-sm btn-info"
+                    >
+                        {buttonText}
                     </button>
                 </div>
             </>
