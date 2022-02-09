@@ -1,6 +1,13 @@
+import { useParams } from "react-router-dom";
+import { uncheckedList } from "./data";
+
 export default function Description(props) {
     
-    const { task } = props;
+    let { currentItemInView } = useParams();
+    const task = uncheckedList[currentItemInView];
+    
+    if (!task)
+        return <></>
     
     return(
         <section className="w-100 mt-5 mb-5">
@@ -10,8 +17,8 @@ export default function Description(props) {
                         <h3 className="font-weight-bold">Task Details</h3>
                     </div>
                     <div className="card-body">
-                        <h3 className="font-weight-bold">{task.key}</h3>
-                        <h4 className = "mt-4 font-weight-bold">{task.data.description}</h4>
+                        <h3 className="font-weight-bold">{currentItemInView}</h3>
+                        <h4 className = "mt-4 font-weight-bold">{task.description}</h4>
                     </div>
                 </div>
             </div>

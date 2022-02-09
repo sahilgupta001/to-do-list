@@ -10,7 +10,7 @@ export default function TaskForm(props) {
     return(
         <section className = "col-12">
             <div className="row">
-                <div class="form-group col-4">
+                <div className="form-group col-4">
                     <input 
                         type="text" 
                         className="form-control" 
@@ -21,7 +21,7 @@ export default function TaskForm(props) {
                         }}  
                     />
                 </div>
-                <div class="form-group col-4">
+                <div className="form-group col-4">
                     <input 
                         type="text" 
                         className="form-control" 

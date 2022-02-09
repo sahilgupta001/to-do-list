@@ -1,4 +1,4 @@
-
+import { Link } from "react-router-dom";
 
 export default function List(props) {
     const { list, fireListEvent, buttonText, title, viewTask, currentItemInView } = props;
@@ -7,7 +7,7 @@ export default function List(props) {
         if (!list)
             return <></>
         var html = Object.keys(list).map((item, index) => (
-            <>
+            <div className = "row" key = {`to-do-list-${item}`}>    
                 <div className = "col-1">
                     <h6 className="font-weight-bold">{index + 1}</h6>
                 </div>
@@ -15,13 +15,12 @@ export default function List(props) {
                     <p className='float-left font-weight-bold'>{list[item].description}</p>
                 </div>
                 <div className = 'col-2'>
-                    <button 
-                        onClick = {() => {viewTask(item, list[item])}}
-                        className = "btn btn-sm btn-dark"
-                        disabled = {currentItemInView ? currentItemInView.key === item : false}
+                    <Link 
+                        className = "btn btn-sm btn-dark"    
+                        to={`/item/${item}`}
                     >
                         View
-                    </button>
+                    </Link>
                 </div>
                 <div className = 'col-3'>
                     <button 
@@ -31,7 +30,7 @@ export default function List(props) {
                         {buttonText}
                     </button>
                 </div>
-            </>
+            </div>
         ))
         return html;
     }
@@ -43,9 +42,7 @@ export default function List(props) {
                     <h3 className = "font-weight-bold">{title}</h3>
                 </div>
                 <div className = "card-body">
-                    <div className = "row">    
-                        {generateHTML()}
-                    </div>
+                    {generateHTML()}
                 </div>
             </div>
         </section>
