@@ -6,6 +6,8 @@ export default function Description(props) {
     let { currentItemInView } = useParams();
     const task = uncheckedList[currentItemInView];
     
+console.log(uncheckedList)
+
     if (!task)
         return <></>
     

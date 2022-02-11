@@ -27,7 +27,7 @@ export default function Dashboard() {
         setCompletedTasks({
             ...completedTasks,
             [key] : data
-        })
+        }) 
         delete pendingTasks[key];
     }
 

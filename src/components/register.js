@@ -2,25 +2,30 @@ import axios from "axios"
 import { useState } from "react"
 
 
-export default function Auth() {
+export default function RegisterUser() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [age, setAge] = useState();
+    const [userName, setUserName] = useState("");
     const [apiMessage, setAPIMessage] = useState()
-    
-    const loginUser = () => {
-        axios.post('https://api-nodejs-todolist.herokuapp.com/user/login', {
+
+    const registerUser = () => {
+        axios.post('https://api-nodejs-todolist.herokuapp.com/user/register', {
             email: email,
-            password: password  
+            password: password,
+            name : userName,
+            age: parseInt(age)  
         }).then((res) => {
-            localStorage.setItem('token', res.data.token);
             setAPIMessage({
                 flag: 0,
-                message: "Login Successful"
+                message: "Registration successful !!"
             })
-        }).catch((err) => {
+        }).catch((error) => {
+            console.log(error.response)
+            if (error && error.response && error.response.data)
             setAPIMessage({
                 flag: 1,
-                message: "Please re-check your credentials!"
+                message: error.response.data
             })
         })
     }
@@ -31,7 +36,7 @@ export default function Auth() {
                 <div className="d-flex justify-content-center h-100">
                     <div className="card">
                         <div className="card-header">
-                            <h3>Sign In</h3>
+                            <h3>Register</h3>
                             <div className="d-flex justify-content-end social_icon">
                                 <span><i className="fab fa-facebook-square"></i></span>
                                 <span><i className="fab fa-google-plus-square"></i></span>
@@ -39,6 +44,30 @@ export default function Auth() {
                             </div>
                         </div>
                         <div className="card-body">
+                            <div className="input-group form-group">
+                                <div className="input-group-prepend">
+                                    <span className="input-group-text"><i className="fas fa-user"></i></span>
+                                </div>
+                                <input 
+                                    type="text" 
+                                    value = {userName} 
+                                    className="form-control" 
+                                    placeholder="name" 
+                                    onChange = {(e) => {setUserName(e.target.value)}} 
+                                />
+                            </div>
+                            <div className="input-group form-group">
+                                <div className="input-group-prepend">
+                                    <span className="input-group-text"><i className="fas fa-user"></i></span>
+                                </div>
+                                <input 
+                                    type="text" 
+                                    value = {age} 
+                                    className="form-control" 
+                                    placeholder="age" 
+                                    onChange = {(e) => {setAge(e.target.value)}} 
+                                />
+                            </div>
                             <div className="input-group form-group">
                                 <div className="input-group-prepend">
                                     <span className="input-group-text"><i className="fas fa-user"></i></span>
@@ -64,23 +93,20 @@ export default function Auth() {
                                 />
                             </div>
                             {(apiMessage) &&
-                                <p className={apiMessage.flag ? "text-danger" : "text-success"}>{apiMessage.message}</p>
+                                <p className={!apiMessage.flag ? "text-success" : "text-danger"}>{apiMessage.message}</p>
                             }
                             <div className="form-group">
                                 <button 
                                     className="btn btn-primary float-right login_btn"
-                                    onClick={() => {loginUser()}}
+                                    onClick={() => {registerUser()}}
                                 >
-                                    Login
+                                    Register
                                 </button>
                             </div>
                         </div>
                         <div className="card-footer">
                             <div className="d-flex justify-content-center links">
-                                Don't have an account?<a href="/register">Sign Up</a>
-                            </div>
-                            <div className="d-flex justify-content-center">
-                                <a href="#">Forgot your password?</a>
+                                Don't have an account?<a href="/">Log In</a>
                             </div>
                         </div>
                     </div>
