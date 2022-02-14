@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 
 export default function List(props) {
     const { list, fireListEvent, buttonText, title, viewTask, currentItemInView } = props;
-    
+    console.log(list)    
     const generateHTML = () => {
         if (!list)
             return <></>
@@ -24,7 +24,7 @@ export default function List(props) {
                 </div>
                 <div className = 'col-3'>
                     <button 
-                        onClick = {() => {fireListEvent(item, list[item])}}
+                        onClick = {() => {fireListEvent(list[item]._id, list[item])}}
                         className = "btn btn-sm btn-info"
                     >
                         {buttonText}

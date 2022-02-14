@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
-import { uncheckedList } from './data';
 import Description from './description';
 import List from './list'
 import TaskForm from './taskForm';
+import axios from 'axios';
 
 export default function Dashboard() {
     const [pendingTasks, setPendingTasks] = useState();
@@ -10,29 +10,78 @@ export default function Dashboard() {
     const [currentItemInView, setCurrentItemInView] = useState(undefined);
 
     useEffect(() => {
-        setPendingTasks(uncheckedList);
+        fetchPendingTasks();
+        fetchCompletedTasks();
     }, [])
 
-    const addToList = (key, description) => {
-        setPendingTasks({
-            ...pendingTasks,
-            [key] : {
-                description: description,
-                timestamp : new Date() 
+    const fetchPendingTasks = () => {
+        axios.get('https://api-nodejs-todolist.herokuapp.com/task?completed=false', {
+            headers : {
+                Authorization : localStorage.getItem('token')
             }
+        }).then((res) => {
+            setPendingTasks(res.data.data)
+        }).catch((err) => {
+            console.log(err)
         })
+    }
+
+    const fetchCompletedTasks = () => {
+        axios.get('https://api-nodejs-todolist.herokuapp.com/task?completed=true', {
+            headers : {
+                Authorization : localStorage.getItem('token')
+            }
+        }).then((res) => {
+            setCompletedTasks(res.data.data)
+        }).catch((err) => {
+            console.log(err)
+        })
+    }
+
+    const addToList = (description) => {
+        axios.post('https://api-nodejs-todolist.herokuapp.com/task', {
+            description: description
+        }, {
+            headers : {
+                Authorization : localStorage.getItem('token')
+            }
+        }).then((res) => {
+            setPendingTasks({
+                ...pendingTasks,
+                [res.data.data._id] : {
+                    description: res.data.data.description,
+                    timestamp : res.data.data.createdAt 
+                }
+            })
+        }).catch((err) => {
+            console.log(err)
+        })
+        
     }
    
     const markAsChecked = (key, data) => {
-        setCompletedTasks({
-            ...completedTasks,
-            [key] : data
-        }) 
-        delete pendingTasks[key];
+        axios.put(`https://api-nodejs-todolist.herokuapp.com/task/${key}`, {
+            completed: true
+        }, {
+            headers : {
+                Authorization : localStorage.getItem('token')
+            }
+        }).then((res) => {
+            setCompletedTasks({
+                ...completedTasks,
+                [key] : data
+            })
+            let pendingTasksCopy = pendingTasks.filter(item => item !== data);
+            setPendingTasks(pendingTasksCopy)
+        }).catch((err) => {
+            console.log(err)
+        })
     }
 
     const markAsUnchecked = (key, data) => {
-        delete completedTasks[key];
+        let completedTasksCopy = completedTasks;
+        delete completedTasksCopy[key];
+        setCompletedTasks(completedTasksCopy)
 
         setPendingTasks({
             ...pendingTasks,
