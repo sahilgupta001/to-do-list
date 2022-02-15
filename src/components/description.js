@@ -1,12 +1,29 @@
 import { useParams } from "react-router-dom";
 import { uncheckedList } from "./data";
+import axios from "axios";
+import { useEffect } from "react";
+
 
 export default function Description(props) {
     
     let { currentItemInView } = useParams();
-    const task = uncheckedList[currentItemInView];
-    
-console.log(uncheckedList)
+    const task = undefined;
+
+    useEffect(() => {
+        fetchItem()
+    }, [])
+
+    const fetchItem = () => {
+        axios.get(`https://api-nodejs-todolist.herokuapp.com/task/${currentItemInView}`,  {
+            headers : {
+                Authorization : localStorage.getItem('token')
+            }
+        }).then((res) => {
+            console.log(res)
+        }).catch((err) => {
+            console.log(err)
+        })
+    }
 
     if (!task)
         return <></>

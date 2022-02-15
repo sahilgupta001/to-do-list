@@ -8,6 +8,7 @@ export default function Dashboard() {
     const [pendingTasks, setPendingTasks] = useState();
     const [completedTasks, setCompletedTasks] = useState([]);
     const [currentItemInView, setCurrentItemInView] = useState(undefined);
+    const [disableButton, setDisableButton ] = useState(false);
 
     useEffect(() => {
         fetchPendingTasks();
@@ -58,8 +59,25 @@ export default function Dashboard() {
         })
         
     }
+
+    const deleteFromList = (id) => {
+        setDisableButton(true)
+        axios.delete(`https://api-nodejs-todolist.herokuapp.com/task/${id}`, {
+            headers : {
+                Authorization : localStorage.getItem('token')    
+            }
+        })
+        .then((res) => {
+            let pendingTasksCopy = pendingTasks.filter(item => item._id !== id);
+            setPendingTasks(pendingTasksCopy)
+            setDisableButton(false)
+        }).catch((err) => {
+            setDisableButton(false)
+        })
+    }
    
     const markAsChecked = (key, data) => {
+        setDisableButton(true)
         axios.put(`https://api-nodejs-todolist.herokuapp.com/task/${key}`, {
             completed: true
         }, {
@@ -67,25 +85,37 @@ export default function Dashboard() {
                 Authorization : localStorage.getItem('token')
             }
         }).then((res) => {
-            setCompletedTasks({
+            setCompletedTasks([
                 ...completedTasks,
-                [key] : data
-            })
+                data
+            ])
             let pendingTasksCopy = pendingTasks.filter(item => item !== data);
             setPendingTasks(pendingTasksCopy)
+            setDisableButton(false)
         }).catch((err) => {
             console.log(err)
+            setDisableButton(false)
         })
     }
 
     const markAsUnchecked = (key, data) => {
-        let completedTasksCopy = completedTasks;
-        delete completedTasksCopy[key];
-        setCompletedTasks(completedTasksCopy)
-
-        setPendingTasks({
-            ...pendingTasks,
-            [key] : data
+        setDisableButton(true)
+        axios.put(`https://api-nodejs-todolist.herokuapp.com/task/${key}`, {
+            completed: false
+        }, {
+            headers : {
+                Authorization : localStorage.getItem('token')
+            }
+        }).then((res) => {
+            let completedTasksCopy = completedTasks.filter(item => item !== data);
+            setCompletedTasks(completedTasksCopy)
+            setPendingTasks([
+                ...pendingTasks,
+                data   
+            ])
+            setDisableButton(false)
+        }).catch((err) => {
+            setDisableButton(false)    
         })
     }
 
@@ -113,6 +143,9 @@ export default function Dashboard() {
                         title = "Tasks to be done !!"
                         viewTask = {viewTask}
                         currentItemInView = {currentItemInView}
+                        listType = {1}
+                        deleteFromList = {deleteFromList}
+                        disableButton = {disableButton}
                     />
                 </div>
                 <div className = "col-6">
@@ -123,6 +156,7 @@ export default function Dashboard() {
                         title = "Completed Tasks"
                         viewTask = {viewTask}
                         currentItemInView = {currentItemInView}
+                        disableButton = {disableButton}
                     /> 
                 </div>
             </div>

@@ -1,8 +1,10 @@
 import { Link } from "react-router-dom";
 
 export default function List(props) {
-    const { list, fireListEvent, buttonText, title, viewTask, currentItemInView } = props;
-    console.log(list)    
+    const { list, fireListEvent, buttonText, title, deleteFromList, viewTask, currentItemInView, listType, disableButton } = props;
+    
+    console.log(disableButton)
+
     const generateHTML = () => {
         if (!list)
             return <></>
@@ -11,25 +13,38 @@ export default function List(props) {
                 <div className = "col-1">
                     <h6 className="font-weight-bold">{index + 1}</h6>
                 </div>
-                <div className='col-6'>
+                <div className={listType ? 'col-4' : 'col-5'}>
                     <p className='float-left font-weight-bold'>{list[item].description}</p>
                 </div>
                 <div className = 'col-2'>
                     <Link 
                         className = "btn btn-sm btn-dark"    
-                        to={`/item/${item}`}
+                        to={`/item/${list[item]._id}`}
+                        disabled = {disableButton}
                     >
                         View
                     </Link>
                 </div>
-                <div className = 'col-3'>
+                <div className = {listType ? 'col-2' : 'col-3'}>
                     <button 
                         onClick = {() => {fireListEvent(list[item]._id, list[item])}}
                         className = "btn btn-sm btn-info"
+                        disabled = {disableButton}
                     >
                         {buttonText}
                     </button>
                 </div>
+                {listType && 
+                    <div className = 'col-2'>
+                        <button 
+                            onClick = {() => {deleteFromList(list[item]._id)}}
+                            className = "btn btn-sm btn-danger"
+                            disabled = {disableButton}
+                        >
+                            Delete
+                        </button>
+                    </div>
+                }
             </div>
         ))
         return html;
