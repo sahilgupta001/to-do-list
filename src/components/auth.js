@@ -1,12 +1,14 @@
 import axios from "axios"
-import { useState } from "react"
-
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import Header from "./header";
 
 export default function Auth() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [apiMessage, setAPIMessage] = useState()
-    
+    let history = useNavigate();
+
     const loginUser = () => {
         axios.post('https://api-nodejs-todolist.herokuapp.com/user/login', {
             email: email,
@@ -17,6 +19,7 @@ export default function Auth() {
                 flag: 0,
                 message: "Login Successful"
             })
+            history("/home");
         }).catch((err) => {
             setAPIMessage({
                 flag: 1,
@@ -27,6 +30,7 @@ export default function Auth() {
 
     return (
         <section>
+            <Header />
             <div className="container">
                 <div className="d-flex justify-content-center h-100">
                     <div className="card">

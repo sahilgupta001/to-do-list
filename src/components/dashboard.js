@@ -3,10 +3,11 @@ import Description from './description';
 import List from './list'
 import TaskForm from './taskForm';
 import axios from 'axios';
+import Header from './header';
 
 export default function Dashboard() {
     const [pendingTasks, setPendingTasks] = useState();
-    const [completedTasks, setCompletedTasks] = useState([]);
+    const [completedTasks, setCompletedTasks] = useState();
     const [currentItemInView, setCurrentItemInView] = useState(undefined);
     const [disableButton, setDisableButton ] = useState(false);
 
@@ -47,13 +48,10 @@ export default function Dashboard() {
                 Authorization : localStorage.getItem('token')
             }
         }).then((res) => {
-            setPendingTasks({
+            setPendingTasks([
                 ...pendingTasks,
-                [res.data.data._id] : {
-                    description: res.data.data.description,
-                    timestamp : res.data.data.createdAt 
-                }
-            })
+                res.data.data
+            ])
         }).catch((err) => {
             console.log(err)
         })
@@ -125,9 +123,9 @@ export default function Dashboard() {
             data : data
         })
     }
-    
     return (
         <section className='container mt-5'>
+            <Header />
             <div className = "row mb-3">
                 <TaskForm 
                     pendingTasks = {pendingTasks}

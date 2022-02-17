@@ -1,13 +1,12 @@
 import { Link } from "react-router-dom";
+import Loader from "./loader";
 
 export default function List(props) {
-    const { list, fireListEvent, buttonText, title, deleteFromList, viewTask, currentItemInView, listType, disableButton } = props;
+    const { list, fireListEvent, buttonText, title, deleteFromList, listType, disableButton } = props;
     
-    console.log(disableButton)
-
     const generateHTML = () => {
         if (!list)
-            return <></>
+            return <Loader />
         var html = Object.keys(list).map((item, index) => (
             <div className = "row" key = {`to-do-list-${item}`}>    
                 <div className = "col-1">
