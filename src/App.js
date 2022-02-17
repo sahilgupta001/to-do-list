@@ -5,6 +5,7 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Description from './components/description';
 import Auth from './components/auth'
 import RegisterUser from './components/register';
+import UserProfile from './components/userProfile';
 
 export default function App() {
   return (
@@ -17,6 +18,7 @@ export default function App() {
               <Route exact path = '/home' element = {<Dashboard />}></Route>  
               <Route exact path = '/register' element = {<RegisterUser />}></Route>  
               <Route exact path = '/item/:currentItemInView' element = {<Description />}></Route>  
+              <Route exact path = '/profile' element = {<UserProfile />}></Route>  
             </>
           }
           </Routes>
