@@ -7,14 +7,18 @@ export default function Auth() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [apiMessage, setAPIMessage] = useState()
+    const [disableButton, setDisableButton] = useState(false);
+    
     let history = useNavigate();
 
-    const loginUser = () => {
-        axios.post('https://api-nodejs-todolist.herokuapp.com/user/login', {
+    const loginUser = async () => {
+        setDisableButton(true);
+        await axios.post('https://api-nodejs-todolist.herokuapp.com/user/login', {
             email: email,
             password: password  
         }).then((res) => {
             localStorage.setItem('token', res.data.token);
+            localStorage.setItem('userId', res.data.user._id);
             setAPIMessage({
                 flag: 0,
                 message: "Login Successful"
@@ -26,6 +30,7 @@ export default function Auth() {
                 message: "Please re-check your credentials!"
             })
         })
+        setDisableButton(false);
     }
 
     return (
@@ -76,6 +81,7 @@ export default function Auth() {
                                 <button 
                                     className="btn btn-primary float-right login_btn"
                                     onClick={() => {loginUser()}}
+                                    disabled = {disableButton}
                                 >
                                     Login
                                 </button>

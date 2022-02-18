@@ -6,10 +6,34 @@ import Loader from "./loader";
 export default function UserProfile() {
     const [ userInfo, setUserInfo ] = useState();
     const [ isEditing, setIsEditing ] = useState(false);
+    const [ disableButton, setDisableButton ] = useState(false);
+    const [ selectedFile, setSelectedFile ] = useState();
 
     useEffect(() => {
         fetchProfile();
     }, [])
+
+    const onFileChange = (event) => {
+        setSelectedFile(event.target.files[0]);
+    };
+
+    
+    const onFileUpload = async () => {
+        const formData = new FormData();
+        formData.append(
+          'avatar', selectedFile
+        );
+        setDisableButton(true);
+        await axios.post("https://api-nodejs-todolist.herokuapp.com/user/me/avatar",
+         formData, {
+             headers : {
+                 Authorization : localStorage.getItem('token')
+             }
+         }).catch((err) => {
+             console.log(err)
+         });
+         setDisableButton(false);
+      };
     
     const fetchProfile = () => {
         axios.get('https://api-nodejs-todolist.herokuapp.com/user/me', {
@@ -23,8 +47,9 @@ export default function UserProfile() {
         })
     }
 
-    const updateProfile = () => {
-        axios.put('https://api-nodejs-todolist.herokuapp.com/user/me', {
+    const updateProfile = async () => {
+        setDisableButton(true);
+        await axios.put('https://api-nodejs-todolist.herokuapp.com/user/me', {
             name : userInfo.name,
             age : userInfo.age,
             email: userInfo.email
@@ -38,6 +63,7 @@ export default function UserProfile() {
         }).catch((err) => {
             console.log(err)
         })
+        setDisableButton(false)
     }
 
     return(
@@ -131,6 +157,7 @@ export default function UserProfile() {
                                                 <button 
                                                     onClick = {() => {updateProfile()}}
                                                     className="btn btn-sm btn-success"
+                                                    disabled = {disableButton}
                                                 >
                                                     Save
                                                 </button>
@@ -146,6 +173,14 @@ export default function UserProfile() {
                                 </tr>
                             </tbody>
                         </table>
+                        <input type="file" onChange={onFileChange} />
+                        <button 
+                            className = "btn btn-info" 
+                            onClick={onFileUpload}
+                            disabled = {disableButton}
+                        >
+                            Upload!
+                        </button>
                     </div>
             }
         </section>
