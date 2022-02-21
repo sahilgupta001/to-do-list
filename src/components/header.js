@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+var Buffer = require('buffer/').Buffer
 
 export default function Header() {
     let history = useNavigate();
@@ -15,8 +16,8 @@ export default function Header() {
         setDisableButton(true);
         await axios.post('https://api-nodejs-todolist.herokuapp.com/user/logout', {}, {
             headers : {
-                Authorization: localStorage.getItem('token')
-            }
+                Authorization: localStorage.getItem('token'),
+            },
         }).then((res) => {
             localStorage.removeItem('token')
             history('/')
@@ -31,16 +32,16 @@ export default function Header() {
         axios.get(`https://api-nodejs-todolist.herokuapp.com/user/${localStorage.getItem('userId')}/avatar`, {
             headers : {
                 Authorization : localStorage.getItem('token')
-            }
+            },
+            responseType: 'arraybuffer'
         }).then((res) => {
-            // console.log(res.data)
-            // console.log(typeof(res.data))
-            var img = URL.createObjectURL(res.data);
-            setProfileImage(img)
+            let base64ImageString = Buffer.from(res.data, 'binary').toString('base64')
+            setProfileImage(`data:image/png;base64,${base64ImageString}`)
         }).catch((err) => {
             console.log(err)
         })
     }
+
      
     return  (
         <section className = "mt-5 container mb-3">
@@ -50,7 +51,7 @@ export default function Header() {
                         width="40"
                         height="40"
                         className = "img-fluid rounded-circle mr-3" 
-                        src= {profileImage}
+                        src= {`${profileImage}`}
                     > 
                     </img>
                     My To-Do List Application
