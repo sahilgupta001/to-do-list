@@ -66,6 +66,20 @@ export default function UserProfile() {
         setDisableButton(false)
     }
 
+    const deleteProfileImage = async () => {
+        setDisableButton(true);
+        await axios.delete('https://api-nodejs-todolist.herokuapp.com/user/me/avatar', {
+            headers: {
+                Authorization: localStorage.getItem('token')
+            }
+        }).then((res) => {
+            console.log(res);
+        }).catch((err) => {
+            console.log(err);
+        })
+        setDisableButton(false);
+    }
+
     return(
         <section>
             <Header />
@@ -83,6 +97,7 @@ export default function UserProfile() {
                                     <th scope="col">Email Id</th>
                                     <th scope="col">Creation Time</th>
                                     <th scope="col">Action</th>
+                                    <th scope = "col">Delete Profile Image</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -169,6 +184,15 @@ export default function UserProfile() {
                                                     Edit
                                                 </button>
                                         }
+                                    </td>
+                                    <td>
+                                        <button 
+                                            className = "btn btn-danger btn-sm"
+                                            onClick = {() => {deleteProfileImage()}}
+                                            disabled = {disableButton}
+                                        >
+                                            Delete
+                                        </button>
                                     </td>
                                 </tr>
                             </tbody>
