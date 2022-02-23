@@ -13,10 +13,10 @@ export default function App() {
       <Router>
         <Routes>
           <Route exact path = '/' element = {<Auth />}></Route>
+          <Route exact path = '/register' element = {<RegisterUser />}></Route>  
           {localStorage.getItem('token') &&   
             <>
               <Route exact path = '/home' element = {<Dashboard />}></Route>  
-              <Route exact path = '/register' element = {<RegisterUser />}></Route>  
               <Route exact path = '/item/:currentItemInView' element = {<Description />}></Route>  
               <Route exact path = '/profile' element = {<UserProfile />}></Route>  
             </>

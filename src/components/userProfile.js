@@ -8,6 +8,8 @@ export default function UserProfile() {
     const [ isEditing, setIsEditing ] = useState(false);
     const [ disableButton, setDisableButton ] = useState(false);
     const [ selectedFile, setSelectedFile ] = useState();
+    const [ fetchImage, setFetchImage ] = useState(false);
+
 
     useEffect(() => {
         fetchProfile();
@@ -29,7 +31,11 @@ export default function UserProfile() {
              headers : {
                  Authorization : localStorage.getItem('token')
              }
-         }).catch((err) => {
+         }).then((res) => {
+            setFetchImage(!fetchImage);
+            setSelectedFile(undefined);
+        })
+         .catch((err) => {
              console.log(err)
          });
          setDisableButton(false);
@@ -73,7 +79,7 @@ export default function UserProfile() {
                 Authorization: localStorage.getItem('token')
             }
         }).then((res) => {
-            console.log(res);
+            setFetchImage(!fetchImage);
         }).catch((err) => {
             console.log(err);
         })
@@ -82,7 +88,9 @@ export default function UserProfile() {
 
     return(
         <section>
-            <Header />
+            <Header 
+                fetchImage = {fetchImage}
+            />
             {!userInfo 
                 ?
                     <Loader />
@@ -202,6 +210,7 @@ export default function UserProfile() {
                             className = "btn btn-info" 
                             onClick={onFileUpload}
                             disabled = {disableButton}
+                            value = {selectedFile}
                         >
                             Upload!
                         </button>

@@ -32,8 +32,10 @@ export default function RegisterUser() {
 
     return (
         <section>
-            <Header />
             <div className="container">
+                <div className="mt-5 row mb-5">
+                    <h1 className="font-weight-bold w-100">My To-Do List Application</h1>
+                </div>
                 <div className="d-flex justify-content-center h-100">
                     <div className="card">
                         <div className="card-header">
