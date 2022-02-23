@@ -4,8 +4,8 @@ import Dashboard from './components/dashboard';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Description from './components/description';
 import Auth from './components/auth'
-import RegisterUser from './components/register';
 import UserProfile from './components/userProfile';
+import RegisterUserComponent from './components/register';
 
 export default function App() {
   return (
@@ -13,7 +13,7 @@ export default function App() {
       <Router>
         <Routes>
           <Route exact path = '/' element = {<Auth />}></Route>
-          <Route exact path = '/register' element = {<RegisterUser />}></Route>  
+          <Route exact path = '/register' element = {<RegisterUserComponent />}></Route>  
           {localStorage.getItem('token') &&   
             <>
               <Route exact path = '/home' element = {<Dashboard />}></Route>  
