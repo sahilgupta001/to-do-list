@@ -1,11 +1,10 @@
 import './App.css';
-import Header from './components/header'
-import Dashboard from './components/dashboard';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Description from './components/description';
 import Auth from './components/auth'
-import UserProfile from './components/userProfile';
 import RegisterUserComponent from './components/register';
+import DashboardComponent from './components/dashboard';
+import UserProfileComponent from './components/userProfile';
 
 export default function App() {
   return (
@@ -16,9 +15,9 @@ export default function App() {
           <Route exact path = '/register' element = {<RegisterUserComponent />}></Route>  
           {localStorage.getItem('token') &&   
             <>
-              <Route exact path = '/home' element = {<Dashboard />}></Route>  
+              <Route exact path = '/home' element = {<DashboardComponent />}></Route>  
               <Route exact path = '/item/:currentItemInView' element = {<Description />}></Route>  
-              <Route exact path = '/profile' element = {<UserProfile />}></Route>  
+              <Route exact path = '/profile' element = {<UserProfileComponent />}></Route>  
             </>
           }
           </Routes>

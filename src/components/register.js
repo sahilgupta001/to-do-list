@@ -10,7 +10,8 @@ export default class RegisterUserComponent extends Component {
             email: "",
             password: "",
             userName: "",
-            disableButton: false
+            disableButton: false,
+            flag: 0
         }
     }
 

@@ -1,9 +1,253 @@
 import Header from "./header";
-import { useEffect, useState } from "react";
+import { Component, useEffect, useState } from "react";
 import axios from "axios";
 import Loader from "./loader";
 
-export default function UserProfile() {
+export default class UserProfileComponent extends Component{
+    constructor(props) {
+        super(props);
+        this.state = {
+            isEditing: false,
+            disableButton: false,
+            fetchImage: false
+        }
+    }
+
+    componentDidMount() {
+        this.fetchProfile();
+    }
+
+
+    onFileChange = (event) => {
+        this.setState({
+            selectedFile: event.target.files[0] 
+        })
+    };
+
+    
+    onFileUpload = async () => {
+        const formData = new FormData();
+        formData.append(
+          'avatar', this.state.selectedFile
+        );
+        this.setState({disableButton : true})
+        await axios.post("https://api-nodejs-todolist.herokuapp.com/user/me/avatar",
+         formData, {
+             headers : {
+                 Authorization : localStorage.getItem('token')
+             }
+         }).then((res) => {
+            this.setState(prevState => ({
+                fetchImage: !prevState.fetchImage,
+                selectedFile : undefined
+            }))
+        })
+         .catch((err) => {
+             console.log(err)
+         });
+         this.setState({disableButton : false})
+      };
+    
+    fetchProfile = () => {
+        axios.get('https://api-nodejs-todolist.herokuapp.com/user/me', {
+            headers : {
+                Authorization: localStorage.getItem('token')
+            }
+        }).then((res) => {
+            this.setState({
+                userInfo: res.data
+            })
+        }).catch((err) => {
+            console.log(err)
+        })
+    }
+
+    updateProfile = async () => {
+        this.setState({disableButton :  true})
+        await axios.put('https://api-nodejs-todolist.herokuapp.com/user/me', {
+            name : this.state.userInfo.name,
+            age : this.state.userInfo.age,
+            email: this.state.userInfo.email
+        }, {
+            headers : {
+                Authorization : localStorage.getItem('token')
+            }
+        }).then((res) => {
+            this.setState({
+                isEditing : false,
+                userInfo: res.data.data
+            })
+        }).catch((err) => {
+            console.log(err)
+        })
+        this.setState({disableButton : false})
+    }
+
+
+    deleteProfileImage = async () => {
+        this.setState({disableButton : true})
+        await axios.delete('https://api-nodejs-todolist.herokuapp.com/user/me/avatar', {
+            headers: {
+                Authorization: localStorage.getItem('token')
+            }
+        }).then((res) => {
+            this.setState(prevState => ({
+                fetchImage :  !prevState.fetchImage
+            }))
+        }).catch((err) => {
+            console.log(err);
+        })
+        this.setState({disableButton : true})
+    }
+
+    render() {
+        return (
+            <section>
+                <Header 
+                    fetchImage = {this.state.fetchImage}
+                />
+                {!this.state.userInfo 
+                    ?
+                        <Loader />
+                    :
+                        <div className="container">
+                            <table class="table">
+                                <thead class="thead-dark">
+                                    <tr>
+                                        <th scope="col">Id</th>
+                                        <th scope="col">Name</th>
+                                        <th scope="col">Age</th>
+                                        <th scope="col">Email Id</th>
+                                        <th scope="col">Creation Time</th>
+                                        <th scope="col">Action</th>
+                                        <th scope = "col">Delete Profile Image</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <th scope="row">{this.state.userInfo._id}</th>
+                                        <td>
+                                            {this.state.isEditing 
+                                                ? 
+                                                    <input 
+                                                        type="email" 
+                                                        className="form-control" 
+                                                        id="exampleInputEmail1" 
+                                                        aria-describedby="emailHelp" 
+                                                        placeholder="Enter email" 
+                                                        value = {this.state.userInfo.name}
+                                                        onChange = {(e) => {
+                                                            this.setState(prevState => ({
+                                                                userInfo : {
+                                                                    ...prevState.userInfo,
+                                                                    name: e.target.value
+                                                                }
+                                                            }))
+                                                        }}
+                                                    />
+                                                :
+                                                    <span>{this.state.userInfo.name}</span>
+                                            }
+                                        </td>
+                                        <td>
+                                            {this.state.isEditing 
+                                                ?
+                                                    <input 
+                                                        type="email" 
+                                                        className="form-control" 
+                                                        id="exampleInputEmail1" 
+                                                        aria-describedby="emailHelp" 
+                                                        placeholder="Enter email" 
+                                                        value = {this.state.userInfo.age}
+                                                        onChange = {(e) => {
+                                                            this.setState(prevState => ({
+                                                                userInfo : {
+                                                                    ...prevState.userInfo,
+                                                                    age : e.target.value
+                                                                }
+                                                            }))
+                                                        }}
+                                                    />
+                                                :
+                                                    <span>{this.state.userInfo.age}</span>
+                                            }    
+                                        </td>
+                                        <td>
+                                            {this.state.isEditing 
+                                                ?
+                                                    <input 
+                                                        type="email" 
+                                                        className="form-control" 
+                                                        id="exampleInputEmail1" 
+                                                        aria-describedby="emailHelp" 
+                                                        placeholder="Enter email" 
+                                                        value = {this.state.userInfo.email}
+                                                        onChange = {(e) => {
+                                                            this.setState(prevState => ({
+                                                                userInfo : {
+                                                                    ...prevState.userInfo,
+                                                                    email: e.target.value
+                                                                }
+                                                            }))                                                            
+                                                        }}
+                                                    />
+                                                :
+                                                    <span>{this.state.userInfo.email}</span>
+                                            }
+                                        </td>
+                                        <td>{this.state.userInfo.createdAt.split("T")[0]}</td>
+                                        <td>
+                                            {this.state.isEditing ? 
+                                                    <button 
+                                                        onClick = {() => {this.updateProfile()}}
+                                                        className="btn btn-sm btn-success"
+                                                        disabled = {this.state.disableButton}
+                                                    >
+                                                        Save
+                                                    </button>
+                                                :
+                                                    <button 
+                                                        onClick = {() => {
+                                                            this.setState({
+                                                                isEditing: true
+                                                            })
+                                                        }}
+                                                        className="btn btn-sm btn-primary"
+                                                    >
+                                                        Edit
+                                                    </button>
+                                            }
+                                        </td>
+                                        <td>
+                                            <button 
+                                                className = "btn btn-danger btn-sm"
+                                                onClick = {() => {this.deleteProfileImage()}}
+                                                disabled = {this.state.disableButton}
+                                            >
+                                                Delete
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <input type="file" onChange={this.onFileChange} />
+                            <button 
+                                className = "btn btn-info" 
+                                onClick={this.onFileUpload}
+                                disabled = {this.state.disableButton}
+                                value = {this.state.selectedFile}
+                            >
+                                Upload!
+                            </button>
+                    </div>
+            }
+        </section>
+        )
+    }
+}
+
+
+export function UserProfile() {
     const [ userInfo, setUserInfo ] = useState();
     const [ isEditing, setIsEditing ] = useState(false);
     const [ disableButton, setDisableButton ] = useState(false);

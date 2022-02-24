@@ -1,5 +1,4 @@
 import { useParams } from "react-router-dom";
-import { uncheckedList } from "./data";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import Header from "./header";
