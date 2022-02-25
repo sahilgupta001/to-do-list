@@ -1,4 +1,4 @@
-import axios from "axios";
+import customInstance from "./axios";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 var Buffer = require('buffer/').Buffer
@@ -15,11 +15,8 @@ export default function Header(props) {
 
     const deleteProfile = async () => {
         setDisableButton(true);
-        await axios.delete('https://api-nodejs-todolist.herokuapp.com/user/me', {
-            headers : {
-                Authorization : localStorage.getItem('token')
-            }
-        }).then((res) => {
+        await customInstance.delete('user/me')
+        .then((res) => {
             localStorage.removeItem('token');
             history('/')    
         }).catch((err) => {
@@ -30,11 +27,8 @@ export default function Header(props) {
 
     const logout = async () => {
         setDisableButton(true);
-        await axios.post('https://api-nodejs-todolist.herokuapp.com/user/logout', {}, {
-            headers : {
-                Authorization: localStorage.getItem('token'),
-            },
-        }).then((res) => {
+        await customInstance.post('user/logout')
+        .then((res) => {
             localStorage.removeItem('token')
             history('/')
         }).catch((err) => {
@@ -44,7 +38,7 @@ export default function Header(props) {
     }
 
     const fetchProfileImage = () => {
-        axios.get(`https://api-nodejs-todolist.herokuapp.com/user/${localStorage.getItem('userId')}/avatar`, {
+        customInstance.get(`user/${localStorage.getItem('userId')}/avatar`, {
             headers : {
                 Authorization : localStorage.getItem('token')
             },

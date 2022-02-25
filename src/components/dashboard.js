@@ -2,9 +2,8 @@ import { useState, useEffect, Component } from 'react';
 import Description from './description';
 import ListComponent from './list'
 import TaskForm from './taskForm';
-import axios from 'axios';
+import customInstance from './axios'
 import Header from './header';
-
 
 export default class DashboardComponent extends Component {
     constructor(props) {
@@ -21,10 +20,7 @@ export default class DashboardComponent extends Component {
     }
 
     fetchPendingTasks = () => {
-        axios.get('https://api-nodejs-todolist.herokuapp.com/task?completed=false', {
-            headers : {
-                Authorization : localStorage.getItem('token')
-            }
+        customInstance.get(`task?completed=false`, {
         }).then((res) => {
             this.setState({
                 pendingTasks: res.data.data
@@ -35,11 +31,7 @@ export default class DashboardComponent extends Component {
     }
 
     fetchCompletedTasks = () => {
-        axios.get('https://api-nodejs-todolist.herokuapp.com/task?completed=true', {
-            headers : {
-                Authorization : localStorage.getItem('token')
-            }
-        }).then((res) => {
+        customInstance.get('https://api-nodejs-todolist.herokuapp.com/task?completed=true').then((res) => {
             this.setState({
                 completedTasks: res.data.data
             })
@@ -49,12 +41,8 @@ export default class DashboardComponent extends Component {
     }
 
     addToList = (description) => {
-        axios.post('https://api-nodejs-todolist.herokuapp.com/task', {
+        customInstance.post('https://api-nodejs-todolist.herokuapp.com/task', {
             description: description
-        }, {
-            headers : {
-                Authorization : localStorage.getItem('token')
-            }
         }).then((res) => {
             this.setState(prevState => ({
                 pendingTasks : [
@@ -69,11 +57,7 @@ export default class DashboardComponent extends Component {
 
     deleteFromList = async (id) => {
         this.setState({disableButton : true})
-        await axios.delete(`https://api-nodejs-todolist.herokuapp.com/task/${id}`, {
-            headers : {
-                Authorization : localStorage.getItem('token')    
-            }
-        }).then((res) => {
+        await customInstance.delete(`https://api-nodejs-todolist.herokuapp.com/task/${id}`).then((res) => {
             let pendingTasksCopy = this.state.pendingTasks.filter(item => item._id !== id);
             this.setState({pendingTasks: pendingTasksCopy})
         })
@@ -82,12 +66,8 @@ export default class DashboardComponent extends Component {
    
     markAsChecked = async (key, data) => {
         this.setState({disableButton: true})
-        await axios.put(`https://api-nodejs-todolist.herokuapp.com/task/${key}`, {
+        await customInstance.put(`https://api-nodejs-todolist.herokuapp.com/task/${key}`, {
             completed: true
-        }, {
-            headers : {
-                Authorization : localStorage.getItem('token')
-            }
         }).then((res) => {
             let pendingTasksCopy = this.state.pendingTasks.filter(item => item !== data);
             this.setState(prevState => ({
@@ -103,12 +83,8 @@ export default class DashboardComponent extends Component {
 
     markAsUnchecked = async (key, data) => {
         this.setState({disableButton: true})
-        await axios.put(`https://api-nodejs-todolist.herokuapp.com/task/${key}`, {
+        await customInstance.put(`https://api-nodejs-todolist.herokuapp.com/task/${key}`, {
             completed: false
-        }, {
-            headers : {
-                Authorization : localStorage.getItem('token')
-            }
         }).then((res) => {
             let completedTasksCopy = this.state.completedTasks.filter(item => item !== data);
             this.setState(prevState => ({
@@ -193,11 +169,7 @@ export function Dashboard() {
     }, [])
 
     const fetchPendingTasks = () => {
-        axios.get('https://api-nodejs-todolist.herokuapp.com/task?completed=false', {
-            headers : {
-                Authorization : localStorage.getItem('token')
-            }
-        }).then((res) => {
+        customInstance.get('https://api-nodejs-todolist.herokuapp.com/task?completed=false').then((res) => {
             setPendingTasks(res.data.data)
         }).catch((err) => {
             console.log(err)
@@ -205,11 +177,7 @@ export function Dashboard() {
     }
 
     const fetchCompletedTasks = () => {
-        axios.get('https://api-nodejs-todolist.herokuapp.com/task?completed=true', {
-            headers : {
-                Authorization : localStorage.getItem('token')
-            }
-        }).then((res) => {
+        customInstance.get('https://api-nodejs-todolist.herokuapp.com/task?completed=true').then((res) => {
             setCompletedTasks(res.data.data)
         }).catch((err) => {
             console.log(err)
@@ -217,12 +185,8 @@ export function Dashboard() {
     }
 
     const addToList = (description) => {
-        axios.post('https://api-nodejs-todolist.herokuapp.com/task', {
+        customInstance.post('https://api-nodejs-todolist.herokuapp.com/task', {
             description: description
-        }, {
-            headers : {
-                Authorization : localStorage.getItem('token')
-            }
         }).then((res) => {
             setPendingTasks([
                 ...pendingTasks,
@@ -236,7 +200,7 @@ export function Dashboard() {
 
     const deleteFromList = (id) => {
         setDisableButton(true)
-        axios.delete(`https://api-nodejs-todolist.herokuapp.com/task/${id}`, {
+        customInstance.delete(`https://api-nodejs-todolist.herokuapp.com/task/${id}`, {
             headers : {
                 Authorization : localStorage.getItem('token')    
             }
@@ -252,12 +216,8 @@ export function Dashboard() {
    
     const markAsChecked = (key, data) => {
         setDisableButton(true)
-        axios.put(`https://api-nodejs-todolist.herokuapp.com/task/${key}`, {
+        customInstance.put(`https://api-nodejs-todolist.herokuapp.com/task/${key}`, {
             completed: true
-        }, {
-            headers : {
-                Authorization : localStorage.getItem('token')
-            }
         }).then((res) => {
             setCompletedTasks([
                 ...completedTasks,
@@ -274,12 +234,8 @@ export function Dashboard() {
 
     const markAsUnchecked = (key, data) => {
         setDisableButton(true)
-        axios.put(`https://api-nodejs-todolist.herokuapp.com/task/${key}`, {
+        customInstance.put(`https://api-nodejs-todolist.herokuapp.com/task/${key}`, {
             completed: false
-        }, {
-            headers : {
-                Authorization : localStorage.getItem('token')
-            }
         }).then((res) => {
             let completedTasksCopy = completedTasks.filter(item => item !== data);
             setCompletedTasks(completedTasksCopy)

@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import axios from "axios";
+import customInstance from "./axios";
 import { useEffect, useState } from "react";
 import Header from "./header";
 
@@ -13,11 +13,8 @@ export default function Description(props) {
     }, [])
 
     const fetchItem = () => {
-        axios.get(`https://api-nodejs-todolist.herokuapp.com/task/${currentItemInView}`,  {
-            headers : {
-                Authorization : localStorage.getItem('token')
-            }
-        }).then((res) => {
+        customInstance.get(`task/${currentItemInView}`)
+        .then((res) => {
             setTask(res.data.data)
         }).catch((err) => {
             console.log(err)

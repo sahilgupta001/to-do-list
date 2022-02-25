@@ -1,6 +1,6 @@
 import Header from "./header";
 import { Component, useEffect, useState } from "react";
-import axios from "axios";
+import customInstance from "./axios";
 import Loader from "./loader";
 
 export default class UserProfileComponent extends Component{
@@ -31,12 +31,9 @@ export default class UserProfileComponent extends Component{
           'avatar', this.state.selectedFile
         );
         this.setState({disableButton : true})
-        await axios.post("https://api-nodejs-todolist.herokuapp.com/user/me/avatar",
-         formData, {
-             headers : {
-                 Authorization : localStorage.getItem('token')
-             }
-         }).then((res) => {
+        await customInstance.post("user/me/avatar",
+         formData)
+         .then((res) => {
             this.setState(prevState => ({
                 fetchImage: !prevState.fetchImage,
                 selectedFile : undefined
@@ -49,11 +46,8 @@ export default class UserProfileComponent extends Component{
       };
     
     fetchProfile = () => {
-        axios.get('https://api-nodejs-todolist.herokuapp.com/user/me', {
-            headers : {
-                Authorization: localStorage.getItem('token')
-            }
-        }).then((res) => {
+        customInstance.get('user/me')
+        .then((res) => {
             this.setState({
                 userInfo: res.data
             })
@@ -64,14 +58,10 @@ export default class UserProfileComponent extends Component{
 
     updateProfile = async () => {
         this.setState({disableButton :  true})
-        await axios.put('https://api-nodejs-todolist.herokuapp.com/user/me', {
+        await customInstance.put('user/me', {
             name : this.state.userInfo.name,
             age : this.state.userInfo.age,
             email: this.state.userInfo.email
-        }, {
-            headers : {
-                Authorization : localStorage.getItem('token')
-            }
         }).then((res) => {
             this.setState({
                 isEditing : false,
@@ -86,11 +76,8 @@ export default class UserProfileComponent extends Component{
 
     deleteProfileImage = async () => {
         this.setState({disableButton : true})
-        await axios.delete('https://api-nodejs-todolist.herokuapp.com/user/me/avatar', {
-            headers: {
-                Authorization: localStorage.getItem('token')
-            }
-        }).then((res) => {
+        await customInstance.delete('user/me/avatar')
+        .then((res) => {
             this.setState(prevState => ({
                 fetchImage :  !prevState.fetchImage
             }))
@@ -270,7 +257,7 @@ export function UserProfile() {
           'avatar', selectedFile
         );
         setDisableButton(true);
-        await axios.post("https://api-nodejs-todolist.herokuapp.com/user/me/avatar",
+        await customInstance.post("https://api-nodejs-todolist.herokuapp.com/user/me/avatar",
          formData, {
              headers : {
                  Authorization : localStorage.getItem('token')
@@ -286,7 +273,7 @@ export function UserProfile() {
       };
     
     const fetchProfile = () => {
-        axios.get('https://api-nodejs-todolist.herokuapp.com/user/me', {
+        customInstance.get('https://api-nodejs-todolist.herokuapp.com/user/me', {
             headers : {
                 Authorization: localStorage.getItem('token')
             }
@@ -299,7 +286,7 @@ export function UserProfile() {
 
     const updateProfile = async () => {
         setDisableButton(true);
-        await axios.put('https://api-nodejs-todolist.herokuapp.com/user/me', {
+        await customInstance.put('https://api-nodejs-todolist.herokuapp.com/user/me', {
             name : userInfo.name,
             age : userInfo.age,
             email: userInfo.email
@@ -318,7 +305,7 @@ export function UserProfile() {
 
     const deleteProfileImage = async () => {
         setDisableButton(true);
-        await axios.delete('https://api-nodejs-todolist.herokuapp.com/user/me/avatar', {
+        await customInstance.delete('https://api-nodejs-todolist.herokuapp.com/user/me/avatar', {
             headers: {
                 Authorization: localStorage.getItem('token')
             }

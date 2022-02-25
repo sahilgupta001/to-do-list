@@ -1,4 +1,4 @@
-import axios from "axios"
+import customInstance from "./axios";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -12,7 +12,7 @@ export default function Auth() {
 
     const loginUser = async () => {
         setDisableButton(true);
-        await axios.post('https://api-nodejs-todolist.herokuapp.com/user/login', {
+        await customInstance.post('https://api-nodejs-todolist.herokuapp.com/user/login', {
             email: email,
             password: password  
         }).then((res) => {

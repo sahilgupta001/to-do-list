@@ -1,4 +1,4 @@
-import axios from "axios"
+import customInstance from "./axios"
 import { Component, useState } from "react"
 import { Navigate } from "react-router-dom";
 
@@ -19,7 +19,7 @@ export default class RegisterUserComponent extends Component {
         this.setState({
             disableButton : true
         })
-        await axios.post('https://api-nodejs-todolist.herokuapp.com/user/register', {
+        await customInstance.post('user/register', {
             email: this.state.email,
             password: this.state.password,
             name : this.state.userName,
@@ -156,7 +156,7 @@ export function RegisterUser() {
     const [apiMessage, setAPIMessage] = useState()
 
     const registerUser = () => {
-        axios.post('https://api-nodejs-todolist.herokuapp.com/user/register', {
+        customInstance.post('https://api-nodejs-todolist.herokuapp.com/user/register', {
             email: email,
             password: password,
             name : userName,
